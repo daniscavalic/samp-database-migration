@@ -102,12 +102,20 @@ stock GetMigrationFileChecksum(const fileName[])
 // If file contains SQL language, or has .sql extension, it is valid migration file.
 stock bool:isMigrationFile(const fileName[])
 {
-    if (strfind(fileName, ".sql") != -1)
+    if (strfind(fileName, ".sql") != -1
+    || strfind(fileName, ".schema") != -1)
     {
         return true;
     }
 
     return false;
+}
+
+// Get migration type.
+stock getMigrationType(const fileName[]) {
+    new migrationDescription[64];
+    strmid(migrationDescription, fileName, strfind(fileName, ".")+1, strlen(fileName));
+    return migrationDescription;
 }
 
 // Get migration description.
@@ -181,7 +189,7 @@ stock bool:MigrateSQLFile(MySQL:serverDatabase, const fileName[]) {
         {
             migrationExecutionTime += GetTickCount()-migrationTickCount;
             migrationsExecuted++;
-            InsertNewMigration(serverDatabase, getMigrationVersion(fileName), getMigrationDescription(fileName), fileCheckSum, migrationExecutionTime);
+            InsertNewMigration(serverDatabase, getMigrationVersion(fileName), getMigrationDescription(fileName), getMigrationType(fileName), fileCheckSum, migrationExecutionTime);
             printf("["LOG_PREFIX"] Migrated schema to version 'V%s - %s'", getMigrationVersion(fileName), getMigrationDescription(fileName));
             return true;
         }
@@ -199,11 +207,11 @@ stock bool:MigrateSQLFile(MySQL:serverDatabase, const fileName[]) {
 }
 
 // Inserts migration into schema table after successful migration.
-stock InsertNewMigration(MySQL:serverDatabase, migrationVersion[], migrationDesc[], migrationCheckSum, migrationExecutionTime) {
+stock InsertNewMigration(MySQL:serverDatabase, migrationVersion[], migrationDesc[], migrationType[], migrationCheckSum, migrationExecutionTime) {
     new dbQueryBuffer[256];
     mysql_format(serverDatabase, dbQueryBuffer, sizeof(dbQueryBuffer), 
-                "INSERT INTO `"SCHEMAS_TABLE"` (`version`, `description`, `checksum`, `type`, `execution_time`) VALUES ('%s', '%s', '%d', 'SCHEMA', '%d')", 
-                migrationVersion, migrationDesc, migrationCheckSum, migrationExecutionTime);
+                "INSERT INTO `"SCHEMAS_TABLE"` (`version`, `description`, `checksum`, `type`, `execution_time`) VALUES ('%s', '%s', '%d', '%s', '%d')", 
+                migrationVersion, migrationDesc, migrationCheckSum, migrationType, migrationExecutionTime);
     new Cache:queryExecutionResult = mysql_query(serverDatabase, dbQueryBuffer);
     new insertExecutionTime = cache_get_query_exec_time();
     cache_delete(queryExecutionResult);
