@@ -45,13 +45,13 @@ hook OnGameModeInit()
 ## Photos
 
 ### Migration schemas database table 
-![image](https://github.com/daniscavalic/samp-database-migration/assets/87475152/cd3c8b48-07af-403e-975c-024aa2506812)
+![image](https://github.com/daniscavalic/samp-database-migration/assets/87475152/0e5f4931-232c-4d69-be16-467947f775f8)
 
 ### Server log
-![image](https://github.com/daniscavalic/samp-database-migration/assets/87475152/4651ff0b-d102-4ca8-9521-65d086c80c4f)
+![image](https://github.com/daniscavalic/samp-database-migration/assets/87475152/68d5d941-70ee-42d2-8f5d-aeff9ab76daf)
 
 ### Schemas folder example
-![image](https://github.com/daniscavalic/samp-database-migration/assets/87475152/adc515be-2c16-4b4f-ba93-8de80f987403)
+![image](https://github.com/daniscavalic/samp-database-migration/assets/87475152/ab7ae292-b65e-43c2-b4ff-b402ada9564f)
 
 ## Credits
 - Danis Cavalic - Created 'samp-database-migration' for PAWN.
